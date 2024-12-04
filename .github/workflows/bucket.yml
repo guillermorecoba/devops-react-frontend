@@ -34,9 +34,10 @@ jobs:
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}  # Token de sesión temporal
           AWS_REGION: us-east-1
           SOURCE_DIR: dist  # La carpeta dist contiene los archivos generados
+          
   sonar-analysis:
     runs-on: ubuntu-latest
-    needs: build-and-deploy  # Esto asegura que el análisis se ejecute después del despliegue
+#    needs: build-and-deploy  # Esto asegura que el análisis se ejecute después del despliegue
 
     steps:
       - name: Checkout Repository
