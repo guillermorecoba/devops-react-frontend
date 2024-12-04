@@ -26,7 +26,7 @@ jobs:
           distribution: 'zulu'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
       - name: Analyze with SonarQube
         uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8
         env:
