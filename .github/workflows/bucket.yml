@@ -47,36 +47,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  send-email:
-    runs-on: ubuntu-latest
-    needs: build-and-deploy  # Asegura que este paso se ejecute después del despliegue en S3
-    if: always()  # Asegura que este paso se ejecute independientemente de si el paso anterior fue exitoso o no
-
-    steps:
-      - name: Invoke Lambda function to send email on success
-        if: success()  # Este paso solo se ejecuta si el paso anterior fue exitoso
-        run: |
-          aws lambda invoke \
-            --function-name EmailFunction \  # Nombre de tu función Lambda
-            --payload '{"status": "Success", "message": "The deployment to S3 was successful."}' \
-            response.json
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1  # Ajusta la región si es necesario
-
-      - name: Invoke Lambda function to send email on failure
-        if: failure()  # Este paso solo se ejecuta si el paso anterior falló
-        run: |
-          aws lambda invoke \
-            --function-name EmailFunction \  # Nombre de tu función Lambda
-            --payload '{"status": "Failure", "message": "The deployment to S3 failed."}' \
-            response.json
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1  # Ajusta la región si es necesario
-
-      - name: Print Lambda response
-        run: cat response.json
